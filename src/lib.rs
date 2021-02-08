@@ -374,8 +374,17 @@ fn run_node_cmd(
     }
     debug!("{}", msg);
 
+    let port: u16 = {
+        use rand::prelude::*;
+        34005u16 + (thread_rng().gen::<u16>() % 995)
+    };
+    let rpc_port_str = format!("{}", port);
+    println!("running node with rpc on port {}", &rpc_port_str);
+
     let _child = Command::new(&path_str)
         .args(args)
+        .arg("--rpc-port")
+        .arg(&rpc_port_str)
         .env("RUST_LOG", rust_log)
         .stdout(Stdio::null())
         .stderr(Stdio::inherit())
